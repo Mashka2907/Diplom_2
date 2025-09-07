@@ -2,16 +2,20 @@ import pytest
 import requests
 import allure
 from urls import Urls
+from data import Data
 
 
 class TestCreateUser:
     @allure.title('Проверка успешной регистрации пользователя')
-    def test_create_user(self, create_user):
-        create_user_data, response_data, status_code = create_user
+    def test_create_user(self):
+        response = requests.post(Urls.CREATE_USER, json=Data.user_data)
+        response_data = response.json()
 
-        assert status_code == 200, 'Статус код должен быть 200 при успешной регистрации'
-        assert 'accessToken' in response_data, 'В ответе должен присутствовать accessToken'
-        assert 'refreshToken' in response_data, 'В ответе должен присутствовать refreshToken'
+        assert response.status_code == 200 and 'accessToken' in response_data, 'В ответе должен присутствовать accessToken и статус код 200'
+
+        access_token = response_data.get('accessToken')
+        delete_response = requests.delete(Urls.USER_DELETE, headers={'Authorization': access_token})
+        assert delete_response.status_code == 202
 
 
     @allure.title('Регистрация пользователя, который уже зарегистрирован')

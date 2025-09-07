@@ -1,3 +1,7 @@
+from faker import Faker
+
+fake = Faker()
+
 class Data:
     UPDATE_EMAIL = {'email': 'update_email@example.com'}
     UPDATE_NAME = {'name': 'update_name'}
@@ -6,4 +10,10 @@ class Data:
     }
     INVALID_HASH_INGREDIENTS = {
         "ingredients": ["invalid_hash"]
+    }
+
+    user_data = {
+        "email": fake.email(),
+        "password": fake.password(),
+        "name": fake.name()
     }
